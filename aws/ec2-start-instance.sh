@@ -13,6 +13,12 @@
 #
 ######
 
+if [ -z $INSTANCE_ID ]
+then
+	echo "INSTANCE_ID environment variable is not set.  Exiting."
+	exit 1
+fi
+
 # Startup the ec2 instance
 aws ec2 start-instances --instance-ids $INSTANCE_ID
 
@@ -39,9 +45,12 @@ Host $public_dns
   IdentityFile $VSCODE_SSH_PEM_FILE_PATH
 EOL
 
+# launch vscode in the workspace directory
+cd ~/workspace && code .
+
 # Connect via ssh client to the ec2 host
 echo ;
 echo "Connecting to the ec2 host";
 echo "ssh -i $SSH_PEM_FILE_PATH ec2-user@$public_dns";
 ssh -i $SSH_PEM_FILE_PATH ec2-user@$public_dns
-/
+
